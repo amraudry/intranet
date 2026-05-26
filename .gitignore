@@ -1,0 +1,66 @@
+# =============================================================
+# .gitignore — Intranet ARQ Studio
+# =============================================================
+
+# ── Variables de entorno (NUNCA subir al repo) ──
+backend/.env
+.env
+*.env
+!*.env.example
+
+# ── Dependencias Node.js ──
+backend/node_modules/
+node_modules/
+
+# ── Archivos subidos por usuarios ──
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ── Logs ──
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Build y distribución ──
+dist/
+build/
+.cache/
+
+# ── Sistema operativo ──
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Editores ──
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Cobertura de tests ──
+coverage/
+.nyc_output/
+
+# ── Certificados SSL ──
+*.pem
+*.key
+*.crt
+*.p12
+
+# ── Backups de BD ──
+*.sql.gz
+*.sql.bak
+backups/
+
+# ── Archivos temporales ──
+tmp/
+temp/
+.tmp/
