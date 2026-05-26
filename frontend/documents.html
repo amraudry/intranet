@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' http://localhost:3000;">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Documentos — Intranet ARQ</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    /* ── Filtros laterales ── */
+    .docs-layout { display:grid; grid-template-columns:220px 1fr; gap:var(--space-8); align-items:start; }
+    .filters-panel { background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:var(--space-5); position:sticky; top:var(--space-6); }
+    .filter-title { font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--color-text-muted); margin-bottom:var(--space-3); }
+    .filter-group { margin-bottom:var(--space-5); }
+    .filter-option { display:flex; align-items:center; gap:var(--space-2); padding:5px 0; cursor:pointer; font-size:0.875rem; }
+    .filter-option input[type="checkbox"] { accent-color:var(--color-primary); width:15px; height:15px; cursor:pointer; }
+    .filter-option label { cursor:pointer; flex:1; color:var(--color-text-secondary); }
+    .filter-option label:hover { color:var(--color-text); }
+    .filter-count { font-family:var(--font-mono); font-size:0.68rem; color:var(--color-text-muted); }
+    .filter-clear { font-family:var(--font-mono); font-size:0.72rem; color:var(--color-accent); cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+
+    /* ── Toolbar ── */
+    .docs-toolbar { display:flex; align-items:center; gap:var(--space-3); margin-bottom:var(--space-5); flex-wrap:wrap; }
+    .docs-results-count { font-family:var(--font-mono); font-size:0.78rem; color:var(--color-text-muted); flex:1; }
+    .view-toggle { display:flex; border:1.5px solid var(--color-border); border-radius:var(--radius-md); overflow:hidden; }
+    .view-btn { padding:7px 12px; font-size:0.85rem; color:var(--color-text-muted); transition:all var(--transition-fast); background:transparent; }
+    .view-btn.active { background:var(--color-primary); color:#fff; }
+    .sort-select { padding:7px 12px; border:1.5px solid var(--color-border); border-radius:var(--radius-md); font-family:var(--font-body); font-size:0.875rem; color:var(--color-text); background:var(--color-surface); cursor:pointer; }
+
+    /* ── Lista view ── */
+    .doc-list .doc-row { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-3) var(--space-4); background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-md); margin-bottom:var(--space-2); transition:all var(--transition-fast); }
+    .doc-list .doc-row:hover { border-color:var(--color-accent); box-shadow:var(--shadow-sm); }
+    .doc-row-name { flex:1; font-size:0.9rem; font-weight:600; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .doc-row-meta { font-family:var(--font-mono); font-size:0.7rem; color:var(--color-text-muted); white-space:nowrap; }
+    .doc-row-actions { display:flex; gap:var(--space-2); flex-shrink:0; }
+
+    @media(max-width:900px){ .docs-layout{grid-template-columns:1fr;} .filters-panel{position:static;} }
+  </style>
+</head>
+<body>
+<button class="hamburger-btn" aria-label="Abrir menú">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div class="app-layout">
+  <aside class="sidebar" role="navigation" aria-label="Navegación principal">
+    <div class="sidebar-logo"><div class="logo-mark">ARQ Studio</div><div class="logo-sub">Portal Corporativo</div></div>
+    <div class="sidebar-user"><div class="user-avatar">AL</div><div class="user-info"><div class="user-name">Cargando...</div><div class="user-role">—</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <a href="/home.html" class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Inicio</a>
+      <a href="/documents.html" class="nav-item active" aria-current="page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Documentos</a>
+      <a href="/search.html" class="nav-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Buscador</a>
+      <div class="nav-section-label" style="margin-top:var(--space-4)">Administración</div>
+      <a href="/admin/panel.html" class="nav-item admin-only"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Panel Admin</a>
+      <a href="/admin/upload.html" class="nav-item admin-only"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>Subir Documentos</a>
+      <a href="/admin/analytics.html" class="nav-item admin-only"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Analíticas</a>
+    </nav>
+    <div class="sidebar-footer"><button class="btn-logout" id="logout-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Cerrar sesión</button></div>
+  </aside>
+
+  <main class="main-content">
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <a href="/home.html">Inicio</a>
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span aria-current="page">Documentos</span>
+    </nav>
+
+    <div class="page-header">
+      <div>
+        <span class="section-number">Repositorio documental</span>
+        <h1>Documentos</h1>
+      </div>
+      <a href="/search.html" class="btn btn-secondary btn-sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Búsqueda avanzada
+      </a>
+    </div>
+
+    <div class="docs-layout">
+      <!-- Filtros -->
+      <aside class="filters-panel" aria-label="Filtros">
+        <div class="filter-group">
+          <div class="filter-title">Categoría</div>
+          <div id="filter-categories">
+            <div class="skeleton" style="height:140px;border-radius:6px"></div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-title">Tipo de archivo</div>
+          <div class="filter-option"><input type="checkbox" id="f-pdf" value="pdf"><label for="f-pdf">PDF</label></div>
+          <div class="filter-option"><input type="checkbox" id="f-docx" value="docx"><label for="f-docx">Word (DOCX)</label></div>
+          <div class="filter-option"><input type="checkbox" id="f-xlsx" value="xlsx"><label for="f-xlsx">Excel (XLSX)</label></div>
+          <div class="filter-option"><input type="checkbox" id="f-dwg" value="dwg"><label for="f-dwg">AutoCAD (DWG)</label></div>
+        </div>
+        <button class="filter-clear" id="clear-filters">Limpiar filtros</button>
+      </aside>
+
+      <!-- Documentos -->
+      <div>
+        <div class="docs-toolbar">
+          <span class="docs-results-count" id="results-count">Cargando...</span>
+          <select class="sort-select" id="sort-select" aria-label="Ordenar por">
+            <option value="reciente">Más recientes</option>
+            <option value="nombre">Nombre A–Z</option>
+            <option value="categoria">Por categoría</option>
+          </select>
+          <div class="view-toggle" role="group" aria-label="Vista">
+            <button class="view-btn active" id="view-grid" aria-pressed="true" title="Vista cuadrícula">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            </button>
+            <button class="view-btn" id="view-list" aria-pressed="false" title="Vista lista">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="docs-container" class="doc-grid">
+          <!-- Skeletons -->
+          <div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>
+        </div>
+
+        <div id="pagination" class="pagination" aria-label="Paginación"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal detalle documento -->
+<div class="modal-overlay" id="doc-modal" role="dialog" aria-modal="true" aria-labelledby="modal-doc-title">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <h3 id="modal-doc-title">Detalle del documento</h3>
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="idle-overlay" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header"><h3>Sesión por expirar</h3></div>
+    <div class="modal-body idle-warning"><p>Tu sesión cerrará en</p><div class="idle-countdown" id="idle-count">60</div><p>segundos.</p></div>
+    <div class="modal-footer" style="justify-content:center"><button class="btn btn-primary" id="idle-continue">Continuar sesión</button></div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="/js/api.js"></script>
+<script src="/js/documents.js"></script>
+</body>
+</html>
