@@ -4,7 +4,7 @@
   "description": "Backend API para Intranet Corporativa de Arquitectura",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node index.js",
     "dev": "nodemon server.js",
     "migrate": "node db/migrate.js"
   },
