@@ -4,7 +4,7 @@
 // =============================================================
 'use strict';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'https://intranet-8wfi.onrender.com/';
 
 // =============================================================
 // SESIÓN — Manejo seguro en sessionStorage
