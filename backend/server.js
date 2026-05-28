@@ -35,7 +35,7 @@ app.use(helmet({
       styleSrc:    ["'self'", 'https://fonts.googleapis.com'],
       fontSrc:     ['https://fonts.gstatic.com'],
       imgSrc:      ["'self'", 'data:'],
-      connectSrc:  ["'self'", 'https://login.microsoftonline.com'],
+      connectSrc:  ["'self'", 'https://login.microsoftonline.com', 'https://intranet-8wfi.onrender.com', 'https://intranet-drab-gamma.vercel.app/'],
       frameSrc:    ["'none'"],
       objectSrc:   ["'none'"],
     },
