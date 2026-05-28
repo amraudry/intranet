@@ -21,6 +21,7 @@ const pool = mysql.createPool({
   // Seguridad: no exponer credenciales en errores
   debug:              false,
   multipleStatements: false, // Prevenir inyección SQL multi-statement
+  ssl: { rejectUnauthorized: false }
 });
 
 // Verificar conexión al iniciar
