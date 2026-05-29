@@ -8,7 +8,7 @@ router.get('/reset-passwords', async (req, res) => {
   try {
     const hash = await bcrypt.hash('Admin2024!', 10);
     await pool.execute(
-      `UPDATE usuarios SET password = ? WHERE email = 'admin@empresa.com'`,
+      `UPDATE usuarios SET password_hash = ? WHERE email = 'admin@empresa.com'`,
       [hash]
     );
     res.json({ ok: true, mensaje: 'Contraseña actualizada correctamente' });
