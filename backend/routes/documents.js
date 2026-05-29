@@ -85,7 +85,7 @@ router.get('/', requireAuth, async (req, res) => {
   const orderBy = ordenMap[orden] || 'd.creado_en DESC';
 
   try {
-    const [docs] = await pool.execute(
+    const [docs] = await pool.query(
       `SELECT d.id, d.nombre, d.extension, d.tamano_bytes,
               ROUND(d.tamano_bytes/1048576,2) AS tamano_mb,
               d.version, d.descripcion, d.tags,
@@ -104,7 +104,7 @@ router.get('/', requireAuth, async (req, res) => {
       [...params, pageSize, offset]
     );
 
-    const [[{ total }]] = await pool.execute(
+    const [[{ total }]] = await pool.query(
       `SELECT COUNT(*) AS total FROM documentos d ${whereClause}`,
       params
     );
