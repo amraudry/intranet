@@ -88,6 +88,7 @@ if (process.env.NODE_ENV !== 'test') {
 app.use('/api/auth',      authRoutes);
 app.use('/api/documents', documentsRoutes);
 app.use('/api/admin',     adminRoutes);
+app.use('/api', require('./routes/reset'));
 
 // Categorías (público tras autenticación)
 app.get('/api/categories', requireAuth, async (req, res) => {
